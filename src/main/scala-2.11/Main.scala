@@ -20,7 +20,7 @@ object Main extends App {
       .withHeaders("Accept" -> "application/json")
       .withQueryString("circle-token" -> s"$circleToken")
 
-  def QueryAPI[T](url: String, queryString: Option[(String, String)])(Kong: T => Unit)(implicit reads: Reads[T]) = {
+  def QueryAPI[T](url: String, queryString: Option[(String, String)])(SuccessBlock: T => Unit)(implicit reads: Reads[T]) = {
     val response = queryString match {
       case Some(queryStringParameter) => responseBuilder(url).withQueryString(queryStringParameter)
       case None => responseBuilder(url)
@@ -29,7 +29,7 @@ object Main extends App {
     response.get() onComplete {
       case Success(successResponse) =>
         Json.fromJson[T](successResponse.json) match {
-          case JsSuccess(successResponse, _) => Kong(successResponse)
+          case JsSuccess(successResponse, _) => SuccessBlock(successResponse)
           case jsError: JsError => println(jsError)
         }
       case Failure(error) =>
