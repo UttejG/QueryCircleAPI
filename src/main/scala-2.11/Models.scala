@@ -18,6 +18,5 @@ object Models {
     name : String,
     index : Int,
     status : String
-    )
-
+  )
 }
