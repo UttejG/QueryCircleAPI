@@ -14,7 +14,7 @@ object Main extends App {
   // This looks something like baseUrl + ":username/:project/"
   val singleBuildUrl = baseUrl + ""
 
-  def responseBuilder(url: String) =
+  def requestBuilder(url: String) =
     new ning.NingWSClient(new com.ning.http.client.AsyncHttpClientConfig.Builder().build())
       .url(url)
       .withHeaders("Accept" -> "application/json")
@@ -22,8 +22,8 @@ object Main extends App {
 
   def QueryAPI[T](url: String, queryString: Option[(String, String)])(successBlock: T => Unit)(implicit reads: Reads[T]) = {
     val response = queryString match {
-      case Some(queryStringParameter) => responseBuilder(url).withQueryString(queryStringParameter)
-      case None => responseBuilder(url)
+      case Some(queryStringParameter) => requestBuilder(url).withQueryString(queryStringParameter)
+      case None => requestBuilder(url)
     }
 
     response.get() onComplete {
